@@ -22,3 +22,10 @@ TODO:
   - usable as importable package or command-line interface
 - unit tests (basic coverage)
 - document HOWTO
+
+
+## References (WIP)
+
+- Ganguly et al
+- Dombrowski et al
+- Alexander
