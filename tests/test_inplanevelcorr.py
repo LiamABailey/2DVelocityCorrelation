@@ -10,7 +10,7 @@ class TestVelocityCorr(unittest.TestCase):
 
     def test_velocity_corr(self):
         """
-        Base test - checks
+        Base test - checks an arbitrary variation
         """
 
     def test_velocity_corr_negativeradius(self):
@@ -46,4 +46,26 @@ class TestVelocityCorr(unittest.TestCase):
     def test_velocity_corr_wrongdepth(self):
         """
         Data condition - third dimension should be length 2
+        """
+
+    def test_velocity_corr_high(self):
+        """
+        Test that the program returns the proper high correlation
+        """
+
+
+    def test_velocity_corr_nearzero(self):
+        """
+        Test that the program returns the proper near-zero correlation
+        """
+
+    def test_velocity_corr_low(self):
+        """
+        Test that the program returns the proper low correlation
+        """
+
+    def test_velocity_corr_largeradius(self):
+        """
+        Test that the function works as expected when the radius is large
+        relative to the data provided
         """
