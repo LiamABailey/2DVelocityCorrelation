@@ -87,24 +87,28 @@ class TestVelocityCorr(unittest.TestCase):
         """
         Base test of the fisher's Z transformation
         """
+        self.assertAlmostEqual(vc._fz(0.099668), 0.1)
 
     def test__fz_neg1(self):
         """
         Base test of the fisher's Z transformation where the value to transform
         is -1
         """
+        self.assertEqual(vc._fz(-1), -np.inf)
 
     def test__fz_0(self):
         """
         Base test of the fisher's Z transformation where the value to transform
         is 0
         """
+        self.assertEqual(vc._fz(0), 0)
 
     def test__fz_1(self):
         """
         Base test of the fisher's Z transformation where the value to transform
         is 1
         """
+        self.assertEqual(vc._fz(1), np.inf)
 
     def test__fz_inv(self):
         """

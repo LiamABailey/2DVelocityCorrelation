@@ -21,6 +21,10 @@ def _fz(v):
     -------
         float : the transformed value (z-score)
     """
+    if v == -1:
+        return -np.inf
+    elif v == 1:
+        return np.inf
     return np.arctanh(v)
 
 def _fz_inv(z):
