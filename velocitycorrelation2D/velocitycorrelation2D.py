@@ -69,3 +69,20 @@ def velocity_corr(data, radius_size):
         int : the number of centers w/ 4+ eligible surrounding data points
 
     """
+    if not _validate_data_format(data):
+        raise TypeError("Data is not ")
+
+def _validate_data_format(data):
+    """
+    Raises an error if the matrix provided is not of shape [n,m,2]
+
+    Args
+    ----
+        data : np.ndarray
+            The data of interest, formatted as (n,m,2)
+
+    Returns
+    -------
+        bool : True if format is valid, False otherwise
+    """
+    return (data.ndim == 3 and data.shape[2] == 2)
