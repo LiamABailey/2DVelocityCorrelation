@@ -23,7 +23,8 @@ def velocity_corr(data, radius_size):
     -------
         float : the correlation score
 
-        int : the number of centers reviewed
+        int : the number of centers reviewed (One or more data points eligible
+            at radius_size distance)
 
         int : the number of centers w/ 8 eligible surrounding data points
 
@@ -31,7 +32,8 @@ def velocity_corr(data, radius_size):
 
     """
     if not _validate_data_format(data):
-        raise TypeError("Data is not ")
+        raise TypeError("Data is not in the proper [n,m,2] shape")
+
 
 def _validate_data_format(data):
     """

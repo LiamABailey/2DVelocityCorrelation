@@ -26,6 +26,7 @@ class TestVelocityCorr(unittest.TestCase):
         with self.asertRaises(ValueError):
             vc.velocity_corr(data, radius)
 
+
     def test_velocity_corr_zeroradius(self):
         """
         OOB condition - what happens when the radius is zero
@@ -34,6 +35,7 @@ class TestVelocityCorr(unittest.TestCase):
         data = np.random_sample((10,10,2,))
         with self.asertRaises(ValueError):
             vc.velocity_corr(data, radius)
+
 
     def test_velocity_corr_extremeradius(self):
         """
@@ -44,6 +46,7 @@ class TestVelocityCorr(unittest.TestCase):
         with self.asertRaises(ValueError):
             vc.velocity_corr(data, radius)
 
+
     def test_velocity_corr_oneradius(self):
         """
         Boundary condition - what happens when the radius = 1
@@ -51,12 +54,31 @@ class TestVelocityCorr(unittest.TestCase):
         radius = 1
         data = np.random.sample((10,10,2,))
         _, n_reviewed, n_center_8, n_center_4 = vc.velocity_corr(data, radius)
+        # all 100 points have neighbors 1 step away, so all will be reviewed
+        self.assertEquals(n_reviewed, 100)
+        # none of the points along the boundary will have 8 neighbors
+        self.assertEquals(n_center_8, 64)
+        # all but the 4 corners will have 4 or more neighbors
+        self.assertEquals(n_center_4, 96)
 
 
     def test_velocity_corr_maximalradius(self):
         """
         Boundary condition - what happens whin the radius = min(m,n) -1
         """
+        radius = 9
+        data = np.random.sample((10,10,2))
+        _, n_reviewed, n_center_8, n_center_4 = vc.velocity_corr(data,radius)
+        # any points with a neighbor at a cardinal direction (+/-9,0) or (0,+/-9) will be reviewed
+        # any points with a neighbor at (+/-6, +/-6)
+        # this is the edges,
+        self.assertEquals(n_reviewed, 72)
+        # none of the edge points will have 8 neighbors
+        self.assertEquals(n_center_8, 0)
+        # none of the edge points will have 4 neighbors)
+        self.assertEquals(n_center_4, 0)
+        # note, in this case some points around each corner will be compared to
+        # 3 other points, but none will be compared to 4
 
 
     def test_velocity_corr_wrongdatadim(self):
