@@ -1,5 +1,5 @@
 """
-Tests for inplanevelcorr.py
+Tests for velocitycorrelation2D.py
 """
 
 import unittest
@@ -21,23 +21,36 @@ class TestVelocityCorr(unittest.TestCase):
         """
         OOB condition - what happens when the radius is less than 0
         """
+        radius = -1
+        data = np.random_sample((10,10,2,))
+        with self.asertRaises(ValueError):
+            vc.velocity_corr(data, radius)
 
     def test_velocity_corr_zeroradius(self):
         """
         OOB condition - what happens when the radius is zero
         """
-
+        radius = 0
+        data = np.random_sample((10,10,2,))
+        with self.asertRaises(ValueError):
+            vc.velocity_corr(data, radius)
 
     def test_velocity_corr_extremeradius(self):
         """
         OOB condition - what happens when the radius >= min(m,n)
         """
-
+        radius = 10
+        data = np.random_sample((10,11,2,))
+        with self.asertRaises(ValueError):
+            vc.velocity_corr(data, radius)
 
     def test_velocity_corr_oneradius(self):
         """
         Boundary condition - what happens when the radius = 1
         """
+        radius = 1
+        data = np.random.sample((10,10,2,))
+        _, n_reviewed, n_center_8, n_center_4 = vc.velocity_corr(data, radius)
 
 
     def test_velocity_corr_maximalradius(self):
@@ -50,8 +63,10 @@ class TestVelocityCorr(unittest.TestCase):
         """
         Data condition - process should check for 3 dimensions
         """
+        radius = 1
+        data = np.random_sample((2,))
         with self.assertRaises(TypeError):
-            vc.velocity_corr(np.array([3,4]), 1)
+            vc.velocity_corr(data, radius)
 
 
 
@@ -59,8 +74,10 @@ class TestVelocityCorr(unittest.TestCase):
         """
         Data condition - third dimension should be length 2
         """
+        radius = 1
+        data = np.random.sample((5,5,1,))
         with self.assertRaises(TypeError):
-            vc.velocity_corr(np.array([[[1],[2]],[[3],[4]]]), 1)
+            vc.velocity_corr(data, radius)
 
 
     def test_velocity_corr_high(self):
@@ -86,65 +103,3 @@ class TestVelocityCorr(unittest.TestCase):
         Test that the function works as expected when the radius is large
         relative to the data provided
         """
-
-
-    def test__fz(self):
-        """
-        Base test of the fisher's Z transformation
-        """
-        self.assertAlmostEqual(vc._fz(0.099668), 0.1)
-
-
-    def test__fz_neg1(self):
-        """
-        Base test of the fisher's Z transformation where the value to transform
-        is -1
-        """
-        self.assertEqual(vc._fz(-1), -np.inf)
-
-
-    def test__fz_0(self):
-        """
-        Base test of the fisher's Z transformation where the value to transform
-        is 0
-        """
-        self.assertEqual(vc._fz(0), 0)
-
-
-    def test__fz_1(self):
-        """
-        Base test of the fisher's Z transformation where the value to transform
-        is 1
-        """
-        self.assertEqual(vc._fz(1), np.inf)
-
-
-    def test__fz_inv(self):
-        """
-        Base test of the fisher's Z inverse transformation
-        """
-        self.assertAlmostEqual(vc._fz_inv(1), (np.e**2 - 1)/(1 + np.e**2))
-
-
-    def test__fz_inv_neginf(self):
-        """
-        Base test of the fisher's Z inverse transformation where the value to
-        transform is -infinity
-        """
-        self.assertEqual(vc._fz_inv(-np.inf), -1)
-
-
-    def test__fz_inv_0(self):
-        """
-        Base test of the fisher's Z inverse transformation where the value to
-        transform is 0
-        """
-        self.assertEqual(vc._fz_inv(0), 0)
-
-
-    def test__fz_inv_inf(self):
-        """
-        Base test of the fisher's Z inverse transformation where the value to
-        transform is infinity
-        """
-        self.assertEqual(vc._fz_inv(np.inf), 1)

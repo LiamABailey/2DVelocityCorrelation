@@ -4,45 +4,6 @@ Module containing core methods for performing the measure of velocity correlatio
 """
 import numpy as np
 
-def _fz(v):
-    """
-    Applies Fisher's Z transform to the provided value
-
-    See "Averaging Correlations: Expected Values and Bias in Combined Pearson
-    rs and Fisher's z Transformations", Corey et al, for jusification for using
-    the transform for averaging correlations
-
-    Args
-    ----
-        v : float or np.ndarray of floats
-            The correlation value
-
-    Returns
-    -------
-        float : the transformed value (z-score)
-    """
-    if v == -1:
-        return -np.inf
-    elif v == 1:
-        return np.inf
-    return np.arctanh(v)
-
-def _fz_inv(z):
-    """
-    Applies the inverse of Fisher's Z transform
-
-    Args
-    ----
-        z : float or np.ndarray of floats
-            The Z score to transform
-
-    Returns
-    -------
-        float : the transformed value (fisher's r)
-    """
-    return np.tanh(z)
-
-
 def velocity_corr(data, radius_size):
     """
     Following the spatial correlation algorithm in Dombrowski et al. (2004),

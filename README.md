@@ -14,7 +14,7 @@ Where:
  - r_|| is the in-plane distance
  - v(x_||) is the velocity at point (x,y)
 
-This correlation is averaged (by way of conversion to z-values, averaging, and then transforming back to correlations, see 'A note on averaging correlations' by Alexander) across an unspecified number of orientations - this implementation reviews 8 orientations, each separated by 45°, to measure the correlation of velocities across a given distance r_||.
+This correlation is averaged across an unspecified number of orientations - this implementation reviews 8 orientations, each separated by 45°, to measure the correlation of velocities across a given distance r_||.
 
 ## Using the provided implementation
 TODO:

@@ -24,4 +24,3 @@ setup(
     packages=find_packages(exclude=('tests','READMEAssets')),
     python_requires = ">=3.6"
 )
-#packages = setuptools.find_packages(where = "src"),
