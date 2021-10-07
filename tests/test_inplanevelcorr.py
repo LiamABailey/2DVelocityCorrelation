@@ -22,7 +22,6 @@ class TestVelocityCorr(unittest.TestCase):
         OOB condition - what happens when the radius is less than 0
         """
 
-
     def test_velocity_corr_zeroradius(self):
         """
         OOB condition - what happens when the radius is zero
@@ -51,12 +50,17 @@ class TestVelocityCorr(unittest.TestCase):
         """
         Data condition - process should check for 3 dimensions
         """
+        with self.assertRaises(TypeError):
+            vc.velocity_corr(np.array([3,4]), 1)
+
 
 
     def test_velocity_corr_wrongdepth(self):
         """
         Data condition - third dimension should be length 2
         """
+        with self.assertRaises(TypeError):
+            vc.velocity_corr(np.array([[[1],[2]],[[3],[4]]]), 1)
 
 
     def test_velocity_corr_high(self):
@@ -83,11 +87,13 @@ class TestVelocityCorr(unittest.TestCase):
         relative to the data provided
         """
 
+
     def test__fz(self):
         """
         Base test of the fisher's Z transformation
         """
         self.assertAlmostEqual(vc._fz(0.099668), 0.1)
+
 
     def test__fz_neg1(self):
         """
@@ -96,6 +102,7 @@ class TestVelocityCorr(unittest.TestCase):
         """
         self.assertEqual(vc._fz(-1), -np.inf)
 
+
     def test__fz_0(self):
         """
         Base test of the fisher's Z transformation where the value to transform
@@ -103,12 +110,14 @@ class TestVelocityCorr(unittest.TestCase):
         """
         self.assertEqual(vc._fz(0), 0)
 
+
     def test__fz_1(self):
         """
         Base test of the fisher's Z transformation where the value to transform
         is 1
         """
         self.assertEqual(vc._fz(1), np.inf)
+
 
     def test__fz_inv(self):
         """
