@@ -1,1 +1,1 @@
-from .velocitycorrelation2D import _fz, _fz_inv, velocity_corr
+from .velocitycorrelation2D import velocity_corr
