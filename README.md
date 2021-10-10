@@ -17,11 +17,14 @@ Where:
 This correlation is averaged across an unspecified number of orientations - this implementation reviews 8 orientations, each separated by 45°, to measure the correlation of velocities across a given distance r_||.
 
 ## Using the provided implementation
+The function expects square data (s.t. all observation points are evenly spaced, and the y-velocity unit is the same as the x-velocity unit) as an `n*m*2` matrix, where `n` is the size of the y-dimension, `m` is the size of the x-dimension. The last dimension is depth-2, where the first layer is the x-velocity component, and the second layer is the y-velocity component.
+
+As data is not always readily available in the above format, a number of functions, importable via `velocitycorrelation2D.utils` have been created to import and shape data:
+
 TODO:
-- Write implementation (in progress)
-  - usable as importable package or command-line interface
-- unit tests (basic coverage)
-- document HOWTO
+- Write import & shaping utilities
+- test import & data shaping utilities
+- documet core function output in readme
 
 
 ## References (WIP)
