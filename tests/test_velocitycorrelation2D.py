@@ -101,7 +101,7 @@ class TestVelocityCorr(unittest.TestCase):
         Test that the program returns the proper high correlation
         """
         radius = 1
-        data = _create_unit_spiral_array(5,0)
+        data = _create_unit_spiral_array(5)
         corr, _, _, _ = vc.velocity_corr(data, radius)
         self.assertGreater(corr, 0.9)
 
@@ -110,8 +110,9 @@ class TestVelocityCorr(unittest.TestCase):
         """
         Test that the program returns the proper near-zero correlation
         """
-        radius = 5
-        data = _create_unit_spiral_array(8,1)
+        radius = 7
+        np.random.seed(123)
+        data = _create_unit_spiral_array(8,2)
 
         corr, _, _, _ = vc.velocity_corr(data, radius)
         self.assertTrue(-0.1 < corr < 0.1, msg = f"Correlation {corr} is not between -0.1 and 0.1")
@@ -121,7 +122,7 @@ class TestVelocityCorr(unittest.TestCase):
         """
         Test that the program returns the proper low correlation
         """
-        radius = 1
+        radius = 9
         t = np.ones((10,10))
         x = np.triu(t)
         y = -1 * np.tril(t)
