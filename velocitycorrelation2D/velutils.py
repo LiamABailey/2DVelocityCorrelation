@@ -1,7 +1,7 @@
 """
 Module containing public-facing elements to support the use of the package
 """
-
+import numpy as np
 
 def square_input(in_df,xcoord_fea='x [px]',
                         ycoord_fea='y [px]',
@@ -79,12 +79,20 @@ def rescale_positions(in_df,
     """
     TOL = 1e-5
 
+    if step_size <= 0:
+        raise ValueError("Step Size must be greater than zero")
+    if type(step_size) != int:
+        raise TypeError("Step size must be an integer")
+
+    if px_unit_conversion <= 0:
+        raise ValueError("Conversion factor must be greater than zero")
+
     new_df = in_df.copy()
     for c in [xcoord_fea, ycoord_fea]:
-        new_df[c] = ((new_df[c] - np.min(new_df[c]))/(px_step_size * px_unit_conversion))
+        new_df[c] = ((new_df[c] - np.min(new_df[c]))/(step_size * px_unit_conversion))
 
     # check for castability to integer
-    if np.abs(new_df[[ycoord_fea, xcoord_fea]].values % 1) > TOL:
+    if np.any(np.abs(new_df[[ycoord_fea, xcoord_fea]].values % 1) > TOL):
         raise ValueError("Cannot safely cast scaled values to integers. "
                         "Confirm that step size and px_unit_conversion are correct.")
 
