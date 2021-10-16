@@ -1,7 +1,9 @@
 """
 Module containing public-facing elements to support the use of the package
 """
+from itertools import product
 import numpy as np
+import pandas as pd
 
 def square_input(in_df,xcoord_fea='x [px]',
                         ycoord_fea='y [px]',
@@ -14,6 +16,8 @@ def square_input(in_df,xcoord_fea='x [px]',
     creates a 3D matrix of dimension <max(ycoord),max(xcoord),2>, where the
     first panel of the 3rd dimension is the X velocity, and the second panel
     is the Y velocity.
+
+    Any matrix elements without corresponding data frame entries are NaN.
 
     Args
     ----
@@ -40,6 +44,35 @@ def square_input(in_df,xcoord_fea='x [px]',
             np.float64
 
     """
+    if not set([xcoord_fea, ycoord_fea, xvel_fea, yvel_fea]) <= set(in_df.columns):
+        raise ValueError("DataFrame provided must contain all four columns")
+
+    max_x = np.max(in_df[xcoord_fea])
+    max_y = np.max(in_df[ycoord_fea])
+    #expand the pandas dataframe
+    exp_pos = pd.DataFrame(
+        list(product(list(range(max_x+1)),list(range(max_y+1)))),
+        columns = [xcoord_fea, ycoord_fea]
+    )
+    exp_in_df = exp_pos.merge(right = in_df, how = 'left', on = [xcoord_fea, ycoord_fea])
+    x_vel = exp_in_df.sort_values([ycoord_fea, xcoord_fea]).drop(yvel_fea, axis=1)\
+                .pivot(index = ycoord_fea, columns = xcoord_fea, values = xvel_fea)\
+                .sort_index()
+    y_vel = exp_in_df.sort_values([ycoord_fea, xcoord_fea]).drop(xvel_fea, axis=1)\
+                .pivot(index = ycoord_fea, columns = xcoord_fea, values = yvel_fea)\
+                .sort_index()
+
+    #require columns in order
+    try:
+        assert list(x_vel.columns) == list(y_vel.columns)
+        assert list(x_vel.index) == list(x_vel.index)
+    except AssertionError as e:
+        msg = ('Unable to coerce input to 3D array: X-velocity and Y-velocity '
+                'not unstacked consistently')
+        raise AssertionError(msg)
+
+    return np.dstack([x_vel.values.astype(np.float64), y_vel.values.astype(np.float64)])
+
 
 def rescale_positions(in_df,
                     step_size,
