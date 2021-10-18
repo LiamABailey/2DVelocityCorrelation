@@ -182,7 +182,6 @@ class TestSquareInput(unittest.TestCase):
             'v [px/frame]': [-0.1,2.0,np.nan,0.3]}
         )
         expected_array = np.array([[[-0.1,-0.1],[0,2]],[[np.nan,np.nan],[0.2,0.3]]])
-
         self.assertArrayEqual(u.square_input(df), expected_array)
 
 
@@ -271,10 +270,10 @@ class TestSquareInput(unittest.TestCase):
         Checks for NAs in positions not provided in the dataframe.
         """
         df = pd.DataFrame({
-            'x [px]': [0,1,0,1],
-            'y [px]': [0,0,1,1],
-            'u [px/frame]': [-0.1,0.0,0.1,np.nan],
-            'v [px/frame]': [-0.1,2.0,0.1,np.nan]}
+            'x [px]': [0,1,0],
+            'y [px]': [0,0,1],
+            'u [px/frame]': [-0.1,0.0,0.1],
+            'v [px/frame]': [-0.1,2.0,0.1]}
         )
-        with self.assertRaises(ValueError):
-            u.square_input(df)
+        expected_array = np.array([[[-0.1,-0.1],[0,2]],[[0.1,0.1],[np.nan,np.nan]]])
+        result = u.square_input(df)

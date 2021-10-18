@@ -44,12 +44,19 @@ def square_input(in_df,xcoord_fea='x [px]',
             np.float64
 
     """
+    # from numpy dtype.kind, signed and unsigned integer codes
+    ITYPES = ['i','u']
     if not set([xcoord_fea, ycoord_fea, xvel_fea, yvel_fea]) <= set(in_df.columns):
         raise ValueError("DataFrame provided must contain all four columns")
-
     if (in_df[xcoord_fea] < 0).any() or (in_df[ycoord_fea] < 0).any():
         raise ValueError("Coordinate column values must be non-negative")
+    if in_df[xcoord_fea].dtype.kind not in ITYPES:
+        raise ValueError("X-coordinate column must be an integer type")
+    if in_df[ycoord_fea].dtype.kind not in ITYPES:
+        raise ValueError("Y-coordinate column must be an integer type ")
 
+    #replace any pd.NA with np.nan
+    in_df = in_df.replace({pd.NA: np.nan})
 
     max_x = np.max(in_df[xcoord_fea])
     max_y = np.max(in_df[ycoord_fea])
@@ -75,7 +82,7 @@ def square_input(in_df,xcoord_fea='x [px]',
                 'not unstacked consistently')
         raise AssertionError(msg)
 
-    return np.dstack([x_vel.values.astype(np.float64), y_vel.values.astype(np.float64)])
+    return np.dstack([x_vel.values, y_vel.values])
 
 
 def rescale_positions(in_df,
