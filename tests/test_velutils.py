@@ -101,7 +101,7 @@ class TestSquareInput(unittest.TestCase):
             'v [px/frame]': [-0.1,2.0,0.1,0.3]}
         )
         expected_array = np.array([[[-0.1,-0.1],[0,2]],[[0.1,0.1],[0.2,0.3]]])
-        self.assertEquals(u.square_input(df), expected_array)
+        self.assertArrayEqual(u.square_input(df), expected_array)
 
 
     def test_square_input_xcoord_col_ne(self):
@@ -168,7 +168,7 @@ class TestSquareInput(unittest.TestCase):
         )
         expected_array = np.array([[[-0.1,-0.1],[0,2]],[[0.1,0.1],[0.2,0.3]]])
 
-        self.assertEquals(u.square_input(df), expected_array)
+        self.assertArrayEqual(u.square_input(df), expected_array)
 
 
     def test_square_input_vel_nas(self):
@@ -183,7 +183,7 @@ class TestSquareInput(unittest.TestCase):
         )
         expected_array = np.array([[[-0.1,-0.1],[0,2]],[[np.nan,np.nan],[0.2,0.3]]])
 
-        self.assertEquals(u.square_input(df), expected_array)
+        self.assertArrayEqual(u.square_input(df), expected_array)
 
 
     def test_square_input_xcoord_nas(self):

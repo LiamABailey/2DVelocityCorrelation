@@ -47,6 +47,10 @@ def square_input(in_df,xcoord_fea='x [px]',
     if not set([xcoord_fea, ycoord_fea, xvel_fea, yvel_fea]) <= set(in_df.columns):
         raise ValueError("DataFrame provided must contain all four columns")
 
+    if (in_df[xcoord_fea] < 0).any() or (in_df[ycoord_fea] < 0).any():
+        raise ValueError("Coordinate column values must be non-negative")
+
+
     max_x = np.max(in_df[xcoord_fea])
     max_y = np.max(in_df[ycoord_fea])
     #expand the pandas dataframe
