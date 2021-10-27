@@ -2,6 +2,12 @@
 
 Implementation of the velocity correlation algorithm used in 'Self-concentration and Large-Scale Coherence in Bacterial Dynamics', Dombrowski et al; 'Cytoplasmic streaming in Drosophilia oocytes with kinesin activity and correlates with the microtubule cytoskeleton architecture', Ganguly et al.
 
+Core function `square_input` is available in `velocitycorrelation2D`, other functions to format the data can be found in `velocitycorrelation2D.velutils`
+
+`import velocitycorrelation2D as vd`  
+`from velocitycorrelaction2D import velutils`
+
+
 ## Velocity Correlation as a Function of In-Plane Distance
 
 Domrowski et al. proposes the following algorithm to compute velocity correlation over a collection of velocity vectors:
@@ -17,18 +23,18 @@ Where:
 This correlation is averaged across an unspecified number of orientations - this implementation reviews 8 orientations, each separated by 45°, to measure the correlation of velocities across a given distance r_||.
 
 ## Using the provided implementation
-The function expects square data (s.t. all observation points are evenly spaced, and the y-velocity unit is the same as the x-velocity unit) as an `n*m*2` matrix, where `n` is the size of the y-dimension, `m` is the size of the x-dimension. The last dimension is depth-2, where the first layer is the x-velocity component, and the second layer is the y-velocity component.
+The function `velocity_corr()` expects square data (s.t. all observation points are evenly spaced, and the y-velocity unit is the same as the x-velocity unit) as an `n*m*2` matrix, where `n` is the size of the y-dimension, `m` is the size of the x-dimension. The last dimension is depth-2, where the first layer is the x-velocity component, and the second layer is the y-velocity component.
 
 As data is not always readily available in the above format, a number of functions, importable via `velocitycorrelation2D.utils` have been created to import and shape data:
+- `square_input()`
+  - Given the input dataframe with rows of [x-coord, y-coord, x-vel, y-vel], coverts from tabular format into the desired `n*m*2` matrix
+- `rescale_positions()`
+  - Some scientific applications provide data where vector start points separated from one another by more than one pixel (such that division by a number *x* would place all observation points 1 pixel away from neighbors in the x/y coordinate space). This function (applied to the tabular data) rescales the positions s.t. they are one pixel away, and sets the minimum coordinate to (0,0).
 
-TODO:
-- Write import & shaping utilities
-- test import & data shaping utilities
-- documet core function output in readme
+**Note** If using both functions, `rescale_positions()` must be used first - `square_input()` returns a data format not accepted by `rescale_positions()`
 
+## References
 
-## References (WIP)
+Ganguly, S., Williams, L., Palacios, I. and Goldstein, R., 2012. Cytoplasmic streaming in Drosophila oocytes varies with kinesin activity and correlates with the microtubule cytoskeleton architecture. Proceedings of the National Academy of Sciences, 109(38), pp.15109-15114.
 
-- Ganguly et al
-- Dombrowski et al
-- Alexander
+Dombrowski, C., Cisneros, L., Chatkaew, S., Goldstein, R. and Kessler, J., 2004. Self-Concentration and Large-Scale Coherence in Bacterial Dynamics.
