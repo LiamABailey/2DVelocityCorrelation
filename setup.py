@@ -5,7 +5,7 @@ with open("README.md","r") as ld:
 
 setup(
     name = "velocitycorrelation2D",
-    version = "1.0.0",
+    version = "1.1.0",
     author = "Liam Bailey",
     author_email = "bailey.liam102@gmail.com",
     description = "Implementation of the velocity correlation algorithm used in ‘Self-concentration and Large-Scale Coherence in Bacterial Dynamics’, Dombrowski et al; ‘Cytoplasmic streaming in Drosophilia oocytes with kinesin activity and correlates with the microtubule cytoskeleton architecture’, Ganguly et al.",
@@ -22,5 +22,6 @@ setup(
         "Operating System :: OS Independent"
     ],
     packages=find_packages(exclude=('tests','READMEAssets')),
-    python_requires = ">=3.6"
+    install_requires = ["pandas>=1.1.*","numpy>=1.1.*"],
+    python_requires = ">=3.7"
 )

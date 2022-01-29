@@ -40,7 +40,7 @@ def process_file(path_to_input: str, path_to_output: str,
                 [1,3,5,7,9]
 
         px_conversion: float, default = 1
-            The conversion factor from um to px. If data is already in px,
+            The conversion factor to px. If data is already in px,
             '1' provides a 1:1 conversion.
 
         px_step_size: int, default = 1
@@ -151,7 +151,7 @@ def _construct_arg_parser() -> argparse.ArgumentParser:
         ("--pxconv",{
             "type": float,
             "default": 1,
-            "help": "The conversion factor from um to px for x/y coordinate features. If not provided, no conversion applied."
+            "help": "The conversion factor to px for x/y coordinate features. If not provided, no conversion applied."
         }),
         ("--pxstep",{
             "type": int,

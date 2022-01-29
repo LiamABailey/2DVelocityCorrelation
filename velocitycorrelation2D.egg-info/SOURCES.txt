@@ -8,4 +8,5 @@ velocitycorrelation2D/velutils.py
 velocitycorrelation2D.egg-info/PKG-INFO
 velocitycorrelation2D.egg-info/SOURCES.txt
 velocitycorrelation2D.egg-info/dependency_links.txt
+velocitycorrelation2D.egg-info/requires.txt
 velocitycorrelation2D.egg-info/top_level.txt
