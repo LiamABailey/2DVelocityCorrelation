@@ -1,3 +1,21 @@
+Metadata-Version: 2.1
+Name: velocitycorrelation2D
+Version: 1.0.0
+Summary: Implementation of the velocity correlation algorithm used in ‘Self-concentration and Large-Scale Coherence in Bacterial Dynamics’, Dombrowski et al; ‘Cytoplasmic streaming in Drosophilia oocytes with kinesin activity and correlates with the microtubule cytoskeleton architecture’, Ganguly et al.
+Home-page: https://github.com/LiamABailey/2DVelocityCorrelation
+Author: Liam Bailey
+Author-email: bailey.liam102@gmail.com
+License: UNKNOWN
+Project-URL: Issues, https://github.com/LiamABailey/2DVelocityCorrelation/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Development Status :: 1 - Planning
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # 2DVelocityCorrelation
 
 Implementation of the velocity correlation algorithm used in 'Self-concentration and Large-Scale Coherence in Bacterial Dynamics', Dombrowski et al; 'Cytoplasmic streaming in Drosophilia oocytes with kinesin activity and correlates with the microtubule cytoskeleton architecture', Ganguly et al.
@@ -20,7 +38,7 @@ Where:
  - r_|| is the in-plane distance
  - v(x_||) is the velocity at point (x,y)
 
-This correlation is averaged across an unspecified number of orientations - this implementation reviews 8 orientations, each separated by 45°, to measure the correlation of velocities across a given distance r_||.
+This correlation is averaged across an unspecified number of orientations - this implementation reviews 8 orientations, each separated by 45Â°, to measure the correlation of velocities across a given distance r_||.
 
 ## Processing via the command line using `calc_spiral_corr.py`
 *TODO*
@@ -41,3 +59,5 @@ As data is not always readily available in the above format, a number of functio
 Ganguly, S., Williams, L., Palacios, I. and Goldstein, R., 2012. Cytoplasmic streaming in Drosophila oocytes varies with kinesin activity and correlates with the microtubule cytoskeleton architecture. Proceedings of the National Academy of Sciences, 109(38), pp.15109-15114.
 
 Dombrowski, C., Cisneros, L., Chatkaew, S., Goldstein, R. and Kessler, J., 2004. Self-Concentration and Large-Scale Coherence in Bacterial Dynamics.
+
+
