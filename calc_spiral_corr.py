@@ -77,7 +77,7 @@ def process_file(path_to_input: str, path_to_output: str,
     # check for column names
     required_cols = [x_pos_fea, y_pos_fea, x_vel_fea, y_vel_fea]
     if any([c not in raw_data.columns for c in required_cols]):
-        raise ValueError(f"Input dataset doesn't contain the four columns {required_columns} at file row {data_start_row}")
+        raise ValueError(f"Input dataset doesn't contain the four columns {required_cols} at file row {data_start_row_ix}")
     # perform rescaling ops
     rescaled_data = rescale_positions(raw_data, px_step_size, px_unit_conversion = px_conversion,
                                         xcoord_fea = x_pos_fea, ycoord_fea = y_pos_fea)
