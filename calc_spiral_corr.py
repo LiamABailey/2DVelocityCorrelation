@@ -2,7 +2,7 @@ import argparse
 
 import pandas as pd
 
-from velocitycorrelation2D import rescale_positions, square_input, velocity_corr
+from velocitycorrelation2D import rescale_positions, square_input, velocity_corr, find_conversion_factor
 
 
 def process_file(path_to_input: str, path_to_output: str,
@@ -39,14 +39,6 @@ def process_file(path_to_input: str, path_to_output: str,
             step = 2 would result in the following observations:
                 [1,3,5,7,9]
 
-        px_conversion: float, default = 1
-            The conversion factor to px. If data is already in px,
-            '1' provides a 1:1 conversion.
-
-        px_step_size: int, default = 1
-            The 'step size' between data observations in the image. E.g.
-            if a velocity measurement is taken on a 5 by 5 grid, this is 5.
-
         x_pos_fea: str, default = 'x [px]'
             The name of the x-coordinate column
 
@@ -65,7 +57,8 @@ def process_file(path_to_input: str, path_to_output: str,
         None
 
     """
-    RADIUS_COL = 'RADIUS[px]'
+    STEP_COL = 'RADIUS[step]'
+    RADIUS_COL = 'RADIUS'
     CORR_COL = 'CORRELATION'
     GEQ1_OBS = 'N_CENTROIDS_1+_OBS'
     GEQ4_OBS = 'N_CENTROIDS_4+_OBS'
@@ -78,8 +71,11 @@ def process_file(path_to_input: str, path_to_output: str,
     required_cols = [x_pos_fea, y_pos_fea, x_vel_fea, y_vel_fea]
     if any([c not in raw_data.columns for c in required_cols]):
         raise ValueError(f"Input dataset doesn't contain the four columns {required_cols} at file row {data_start_row_ix}")
+    # identify conversion factor
+    conversion_factor = find_conversion_factor(raw_data, x_pos_fea, y_pos_fea)
+    print(f"Discovered conversion factor of {conversion_factor}")
     # perform rescaling ops
-    rescaled_data = rescale_positions(raw_data, px_step_size, px_unit_conversion = px_conversion,
+    rescaled_data = rescale_positions(raw_data, conversion_factor = conversion_factor,
                                         xcoord_fea = x_pos_fea, ycoord_fea = y_pos_fea)
     # square the data - convert from tabular to y*x*2
     squared_data = square_input(rescaled_data, xcoord_fea = x_pos_fea, ycoord_fea = y_pos_fea,
@@ -90,9 +86,9 @@ def process_file(path_to_input: str, path_to_output: str,
     results = []
     for r in range(min_radius, max_radius + 1, radius_step_size):
         corr, n1p_obs, n4p_obs, n8_obs = velocity_corr(squared_data, r)
-        results.append([r * px_step_size, corr, n1p_obs, n4p_obs, n8_obs])
+        results.append([r, r * conversion_factor, corr, n1p_obs, n4p_obs, n8_obs])
 
-    result_frame = pd.DataFrame(results, columns = [RADIUS_COL, CORR_COL, GEQ1_OBS, GEQ4_OBS, EQ8_OBS])
+    result_frame = pd.DataFrame(results, columns = [STEP_COL, RADIUS_COL, CORR_COL, GEQ1_OBS, GEQ4_OBS, EQ8_OBS])
     result_frame.to_csv(path_to_output, index= False)
     print(f"Processing complete, output written to {path_to_output}")
 
@@ -148,35 +144,24 @@ def _construct_arg_parser() -> argparse.ArgumentParser:
             "default": 1,
             "help": "The radius step size (in px_grid_spacing/px) to compute. Default = 1"
         }),
-        ("--pxconv",{
-            "type": float,
-            "default": 1,
-            "help": "The conversion factor to px for x/y coordinate features. If not provided, no conversion applied."
-        }),
-        ("--pxstep",{
-            "type": int,
-            "default": 1,
-            "metavar": "px_grid_spacing",
-            "help": "The grid spacing between each observation, in px. Default = 1"
-        }),
         ("--xpfea",{
             "type": str,
-            "default": "x [px]",
+            "default": "x [m]",
             "help": "The column name of the x-coordinate values. Default = 'x [px]'"
         }),
         ("--ypfea",{
             "type": str,
-            "default": "y [px]",
+            "default": "y [m]",
             "help": "The column name of the y-coordinate values. Default = 'y [px]'"
         }),
         ("--xvfea",{
             "type": str,
-            "default": "u [px/frame]",
+            "default": "u [m/s]",
             "help": "The column name of the x-velocity values. Default = 'u [px/frame]'"
         }),
         ("--yvfea",{
             "type": str,
-            "default": "v [px/frame]",
+            "default": "v [m/s]",
             "help": "The column name of the x-coordinate values. Default = 'v [px/frame]'"
         })
     )
@@ -196,8 +181,6 @@ if __name__ == '__main__':
         min_radius = _args.rmin,
         max_radius = _args.rmax,
         radius_step_size = _args.rstep,
-        px_conversion = _args.pxconv,
-        px_step_size = _args.pxstep,
         x_pos_fea = _args.xpfea,
         y_pos_fea = _args.ypfea,
         x_vel_fea = _args.xvfea,
