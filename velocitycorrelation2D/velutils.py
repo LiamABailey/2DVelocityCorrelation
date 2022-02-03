@@ -2,8 +2,89 @@
 Module containing public-facing elements to support the use of the package
 """
 from itertools import product
+
 import numpy as np
 import pandas as pd
+
+
+def _gcd_fp(x, y, rtol = 1e-05, atol = 1e-10, rnd = -1):
+    """
+    Find the gcd to two floating point numbers, up to a tolerance,
+    via a modified Euclid's algorithm
+
+    Args
+    ----
+        x, y: float
+            The floating point numbers
+
+        rtol: float, default = 1e-05
+            The relative tolerance
+
+        atol: float, default = 1e07
+            The absolute tolerance
+
+        rnd: int, default = -1,
+            The level of rounding applied to the output. provide a natural
+            number to activate.
+
+    Returns
+    -------
+        float : gcd(x,y)
+
+    """
+    # need the minimum to define tolerance
+    m = min(abs(x), abs(y))
+    while abs(y) > (rtol * m + atol):
+        x, y = y, x % y
+    if rnd > 0:
+        x = round(x, rnd)
+    return x
+
+
+def find_conversion_factor(in_df, xcoord_fea='x [px]', ycoord_fea='y [px]'):
+    """
+    Identifies the conversion factor such that the distance between observations
+    in the grid is +/-1 for the x and y coordinates. Requires the y scaling
+    to be the same as the x scaling
+
+    Args
+    ----
+        in_df : pd.DataFrame
+            The input data
+
+        xcoord_fea : str, default = 'x [px]'
+            The x-coordinate column name. Can only contain non-negative integer
+            values.
+
+        ycoord_fea : str, default = 'y [px]'
+            The y-coordinate column name. Can only contain non-negative integer
+            values.
+
+    Returns
+    -------
+        float : the conversion factor
+    """
+
+    coord_scales = {
+        xcoord_fea: -1,
+        ycoord_fea: -1
+    }
+    # find gcd for x-coord, y_coord
+    for crd in coord_scales.keys():
+        coord_vals = in_df[crd].values - in_df[crd].values.min()
+        candidate_gcf = _gcd_fp(coord_vals[0], coord_vals[1], rnd = 12)
+        # we can repeatedly apply the gcd finding method to find the
+        # shared gcd
+        for ix in range(2, len(coord_vals)):
+            candidate_gcf = _gcd_fp(candidate_gcf, coord_vals[ix], rnd = 12)
+        coord_scales[crd] = candidate_gcf
+    # require scales to be equal for both parts of the coordinate system
+    if coord_scales[xcoord_fea] != coord_scales[ycoord_fea]:
+        raise ValueError(("X and Y coordinates must be on same scale"
+            f", found {coord_scales[xcoord_fea]} and {coord_scales[ycoord_fea]}"))
+
+    return coord_scales[xcoord_fea]
+
 
 def square_input(in_df,xcoord_fea='x [px]',
                         ycoord_fea='y [px]',
@@ -86,8 +167,7 @@ def square_input(in_df,xcoord_fea='x [px]',
 
 
 def rescale_positions(in_df,
-                    step_size,
-                    px_unit_conversion = 1,
+                    conversion_factor = 1,
                     xcoord_fea = 'x [px]',
                      ycoord_fea = 'y [px]'):
     """
@@ -96,20 +176,15 @@ def rescale_positions(in_df,
     must be rescaled such that observations are (potentially) next to one another.
 
     Adjust positions s.t. min = 0,
-    max = (data_max - data_min)/(step_size * px_unit_conversion)
+    max = (data_max - data_min)/(step_size * conversion_factor)
 
     Args
     ----
         in_df : pd.DataFrame
             The input data
 
-        step_size : int > 0
-            The rescaling factor describing the distance between observations
-            (in 'pixels')
-
-        px_unit_conversion: float > 0, default 1
-            The measurement unit corresponding to the length/width of a
-            single pixel
+        conversion_factor: float > 0, default 1
+            The conversion factor s.t. the grid basis is [1,1]
 
         ycoord_fea : str, default = 'y [px]'
             The x-coordinate column name
@@ -123,22 +198,17 @@ def rescale_positions(in_df,
     """
     TOL = 1e-5
 
-    if step_size <= 0:
-        raise ValueError("Step Size must be greater than zero")
-    if type(step_size) != int:
-        raise TypeError("Step size must be an integer")
-
-    if px_unit_conversion <= 0:
+    if conversion_factor <= 0:
         raise ValueError("Conversion factor must be greater than zero")
 
     new_df = in_df.copy()
     for c in [xcoord_fea, ycoord_fea]:
-        new_df[c] = ((new_df[c] - np.min(new_df[c]))/(step_size * px_unit_conversion))
+        new_df[c] = ((new_df[c] - np.min(new_df[c]))/(conversion_factor))
 
     # check for castability to integer
     if np.any(np.abs(new_df[[ycoord_fea, xcoord_fea]].values % 1) > TOL):
         raise ValueError("Cannot safely cast scaled values to integers. "
-                        "Confirm that step size and px_unit_conversion are correct.")
+                        "Confirm that step size and conversion_factor are correct.")
 
     new_df[xcoord_fea] = new_df[xcoord_fea].values.astype(np.int64)
     new_df[ycoord_fea] = new_df[ycoord_fea].values.astype(np.int64)

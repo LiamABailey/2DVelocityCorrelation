@@ -42,7 +42,10 @@ This correlation is averaged across an unspecified number of orientations - this
 
 ## Processing via the command line using `calc_spiral_corr.py`
 
-A script, `calc_spiral_corr.py` , has been written to support the calculation of the radius measure against tabular data. The help text (which can be recovered by the -h flag, is shown below).
+A script, `calc_spiral_corr.py` , has been written to support the calculation of the radius measure against tabular data. This process takes a single .csv as input (describing velocity in one frame), and returns a single .csv as output (describing the correlation across the desired radii). It supports a variety of inputs to configure the process, allowing for control over the measurement radii, coversion to a *pixel* [px] basis, and reshaping to remove gaps in the data (px_grid_spacing). Please note that many velocity measurement systems, such as PIVLAB, provide velocity measurements on a grid, such that measurements are *n* pixels away from one another. It is recommended to provide *n* as a scaling factor via (px_grid_spacing) to improve computation time (as gaps in the grid are ignored) and to provide a more readily interpretable output. Please note that the output `RADIUS[px]` in the resulting .csv is in the original scale from the input data file, not on the rescaled grid.
+
+
+The help text (which can be recovered by the -h flag, is shown below).
 
     usage: calc_spiral_corr.py [-h] [--ds data_start_row_ix] [--rmin RMIN] [--rmax RMAX] [--rstep RSTEP] [--pxconv PXCONV]
                                [--pxstep px_grid_spacing] [--xpfea XPFEA] [--ypfea YPFEA] [--xvfea XVFEA] [--yvfea YVFEA]
@@ -61,7 +64,7 @@ A script, `calc_spiral_corr.py` , has been written to support the calculation of
       --rmin RMIN           The minimum radius size (in px_grid_spacing/px) to observe. Default = 1
       --rmax RMAX           The maximum radius size (in px_grid_spacing/px) to observe. Default = 25
       --rstep RSTEP         The radius step size (in px_grid_spacing/px) to compute. Default = 1
-      --pxconv PXCONV       The conversion factor from um to px for x/y coordinate features. If not provided, no conversion applied.
+      --pxconv PXCONV       The conversion factor to px for x/y coordinate features. If not provided, no conversion applied.
       --pxstep px_grid_spacing
                             The grid spacing between each observation, in px. Default = 1
       --xpfea XPFEA         The column name of the x-coordinate values. Default = 'x [px]'

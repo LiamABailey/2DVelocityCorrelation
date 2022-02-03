@@ -32,26 +32,8 @@ class TestRescalePositions(unittest.TestCase):
         """
         basic test of rescaling
         """
-        rescaled = u.rescale_positions(BASIC_FRAME, 3, 0.5)
+        rescaled = u.rescale_positions(BASIC_FRAME, 1.5)
         self.assertFrameEqual(rescaled, BASIC_RESULT_FRAME)
-
-
-    def test_rescale_step_size_oob(self):
-        """
-        Assert that error is raised if step size isn't greater than zero
-        """
-        step_size = 0
-        with self.assertRaises(ValueError):
-            u.rescale_positions(BASIC_FRAME, step_size, 0.5)
-
-
-    def test_rescale_step_size_int(self):
-        """
-        Assert that step_size is an integer
-        """
-        step_size = 1.3
-        with self.assertRaises(TypeError):
-            u.rescale_positions(BASIC_FRAME, step_size, 0.5)
 
 
     def test_rescale_conversion_oob(self):
@@ -62,21 +44,20 @@ class TestRescalePositions(unittest.TestCase):
         with self.assertRaises(ValueError):
             u.rescale_positions(BASIC_FRAME, 3, px_unit_conversion)
 
-
     def test_rescale_invalid_conversion(self):
         """
         Assert that error is raised if rescaled positions are not
         safely casstable to integers
         """
         with self.assertRaises(ValueError):
-            rescaled = u.rescale_positions(BASIC_FRAME, 1, 1)
+            rescaled = u.rescale_positions(BASIC_FRAME, 1)
 
 
     def test_rescale_positions_integers(self):
         """
         Confirm that the position columns are retuned as integer types
         """
-        rescaled = u.rescale_positions(BASIC_FRAME, 3, 0.5)
+        rescaled = u.rescale_positions(BASIC_FRAME, 1.5)
         self.assertTrue(pd.api.types.is_integer_dtype(rescaled['x [px]']))
         self.assertTrue(pd.api.types.is_integer_dtype(rescaled['y [px]']))
 
