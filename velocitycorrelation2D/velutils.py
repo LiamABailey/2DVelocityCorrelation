@@ -203,7 +203,7 @@ def rescale_positions(in_df,
 
     new_df = in_df.copy()
     for c in [xcoord_fea, ycoord_fea]:
-        new_df[c] = ((new_df[c] - np.min(new_df[c]))/(conversion_factor))
+        new_df[c] = ((new_df[c] - np.min(new_df[c]))/( conversion_factor))
 
     # check for castability to integer
     if np.any(np.abs(new_df[[ycoord_fea, xcoord_fea]].values % 1) > TOL):

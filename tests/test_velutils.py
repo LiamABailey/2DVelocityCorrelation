@@ -19,6 +19,57 @@ BASIC_RESULT_FRAME = pd.DataFrame({
                             'y [px]': [0,0,1,1]
                             })
 
+class TestGCDFP(unittest.TestCase):
+
+    def test_gcd_fp_int(self):
+        """
+        Tests of gcd_fp on integers
+        """
+        cases = [(3,2,1), (4,2,2), (19, 23, 1), (30,36,6)]
+        for case in cases:
+            with self.subTest(x = case[0], y = case[1]):
+                self.assertEqual(u._gcd_fp(case[0], case[1]), case[2])
+
+    def test_gcd_fp_mixed(self):
+        """
+        Tests of gcd_fp where one input is an integer, and
+        the other is a float
+        """
+        cases = [(0.5, 1, 0.5), (1.0,2,1), (3, 1.9, 0.1), (0.8,2,0.4)]
+        for case in cases:
+            with self.subTest(x = case[0], y = case[1]):
+                self.assertEqual(u._gcd_fp(case[0], case[1], rnd = 10), case[2])
+
+
+    def test_gcd_fp_float_lt1_large(self):
+        """
+        Tests of gcd_fp where both values are near, but less than, 1
+        """
+        cases = [(.98, .96, .02), (0.99, 0.9, 0.09), (0.88, 0.96, 0.08), (0.99999, 0.88888, 0.11111)]
+        for case in cases:
+            with self.subTest(x = case[0], y = case[1]):
+                self.assertEqual(u._gcd_fp(case[0], case[1], rnd = 10), case[2])
+
+    def test_gcd_fp_float_gt0_small(self):
+        """
+        Tests where the values are near, but greater than, 0
+        """
+        cases = [(.03, .02, .01 ), (0.0000000075, 0.000000005, 0.0000000025),
+                (7.370357806e-05, 7.54096794e-05, 3.4122e-07)]
+        for case in cases:
+            with self.subTest(x = case[0], y = case[1]):
+                self.assertAlmostEqual(u._gcd_fp(case[0], case[1], rnd = 12), case[2], delta = min([case[0],case[1]]) * 0.0001)
+
+    def test_gcd_fp_float_mixed(self):
+        """
+        Cases where the values provided vary widely
+        """
+        cases = [(100, 0.0000001, 0.0000001), (0.99999999945, 0.22222221, 0.11111105),
+                (0.63, 0.0004, 0.0004)]
+        for case in cases:
+            with self.subTest(x = case[0], y = case[1]):
+                self.assertAlmostEqual(u._gcd_fp(case[0], case[1], rnd = 12), case[2], delta = min([case[0],case[1]]) * 0.0001)
+
 class TestRescalePositions(unittest.TestCase):
 
     def assertFrameEqual(self, a, b, msg = ""):
@@ -40,9 +91,9 @@ class TestRescalePositions(unittest.TestCase):
         """
         Assert that conversion factor is greater than zero
         """
-        px_unit_conversion = -0.2
+        unit_conversion = -0.2
         with self.assertRaises(ValueError):
-            u.rescale_positions(BASIC_FRAME, 3, px_unit_conversion)
+            u.rescale_positions(BASIC_FRAME, unit_conversion)
 
     def test_rescale_invalid_conversion(self):
         """
