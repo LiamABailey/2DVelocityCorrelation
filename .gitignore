@@ -3,4 +3,4 @@
 *.txt
 
 # retain csv for test assets
-!test_assets/*/*.csv
+!tests/test_assets/*/*.csv
