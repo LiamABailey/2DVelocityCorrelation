@@ -1,11 +1,13 @@
 """
 Tests for velutils.py
 """
+import os
+import unittest
+
 import numpy as np
 from numpy.testing import assert_equal
 import pandas as pd
 from pandas.testing import assert_frame_equal
-import unittest
 
 import velocitycorrelation2D.velutils as u
 
@@ -69,6 +71,39 @@ class TestGCDFP(unittest.TestCase):
         for case in cases:
             with self.subTest(x = case[0], y = case[1]):
                 self.assertAlmostEqual(u._gcd_fp(case[0], case[1], rnd = 12), case[2], delta = min([case[0],case[1]]) * 0.0001)
+
+
+class TestFindConversionFactor(unittest.TestCase):
+
+    def setUp(self):
+        self.xcol = 'x [m]'
+        self.ycol = 'y [m]'
+        self.folder_path = os.path.join(os.path.dirname(__file__), "test_assets", "find_conversion_factor")
+        self.file_extension = '.csv'
+
+    def testFindConversionFactorSimple(self):
+        """
+        Basic tests of FindConversionFactor, where there are few records
+        """
+        # test assets are indexed 1...n
+        n_tests = 1
+        test_fnames = [f"basic_{i}{self.file_extension}" for i in range(1, n_tests+1)]
+        test_results = pd.read_csv(os.path.join(self.folder_path, "basic_results.csv"))
+        for i in range(1, n_tests+1):
+            with self.subTest(i = i):
+                test_data = pd.read_csv(os.path.join(self.folder_path, test_fnames[i-1]))
+                expected = test_results.loc[test_results.test_ix == i, 'expected_value'].values[0]
+                result = u.find_conversion_factor(test_data, xcoord_fea = self.xcol, ycoord_fea = self.ycol)
+                self.assertEqual(expected, result)
+
+
+    def testFindConversionFactorNoCommonXYFactor(self):
+        """
+        Validate error when x-coordinate and y-coordinate errors are
+        not the same
+        """
+        pass
+
 
 class TestRescalePositions(unittest.TestCase):
 
