@@ -86,7 +86,7 @@ class TestFindConversionFactor(unittest.TestCase):
         Basic tests of FindConversionFactor, where there are few records
         """
         # test assets are indexed 1...n
-        n_tests = 1
+        n_tests = 2
         test_fnames = [f"basic_{i}{self.file_extension}" for i in range(1, n_tests+1)]
         test_results = pd.read_csv(os.path.join(self.folder_path, "basic_results.csv"))
         for i in range(1, n_tests+1):
@@ -94,8 +94,7 @@ class TestFindConversionFactor(unittest.TestCase):
                 test_data = pd.read_csv(os.path.join(self.folder_path, test_fnames[i-1]))
                 expected = test_results.loc[test_results.test_ix == i, 'expected_value'].values[0]
                 result = u.find_conversion_factor(test_data, xcoord_fea = self.xcol, ycoord_fea = self.ycol)
-                self.assertEqual(expected, result)
-
+                self.assertAlmostEqual(expected, result, delta = min([expected, result]) * 0.0001)
 
     def testFindConversionFactorNoCommonXYFactor(self):
         """
