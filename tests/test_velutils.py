@@ -86,7 +86,7 @@ class TestFindConversionFactor(unittest.TestCase):
         Basic tests of FindConversionFactor, where there are few records
         """
         # test assets are indexed 1...n
-        n_tests = 2
+        n_tests = 3
         test_fnames = [f"basic_{i}{self.file_extension}" for i in range(1, n_tests+1)]
         test_results = pd.read_csv(os.path.join(self.folder_path, "basic_results.csv"))
         for i in range(1, n_tests+1):
@@ -101,7 +101,20 @@ class TestFindConversionFactor(unittest.TestCase):
         Validate error when x-coordinate and y-coordinate errors are
         not the same
         """
-        pass
+        n_tests = 2
+        test_fnames = [f"different_scale_{i}{self.file_extension}" for i in range(1, n_tests+1)]
+        test_results = pd.read_csv(os.path.join(self.folder_path, "different_scale_results.csv"))
+        for i in range(1, n_tests+1):
+            with self.subTest(i = i):
+                test_data = pd.read_csv(os.path.join(self.folder_path, test_fnames[i-1]))
+                expected_x = test_results.loc[test_results.test_ix == i, 'xscale'].values[0]
+                expected_y = test_results.loc[test_results.test_ix == i, 'yscale'].values[0]
+                expected_message = ("X and Y coordinates must be on same scale"
+                    f", found {expected_x} and {expected_y}")
+                with self.assertRaises(ValueError) as e:
+                    u.find_conversion_factor(test_data, xcoord_fea = self.xcol, ycoord_fea = self.ycol)
+                    self.assertEqual(expected_message, str(e.exception))
+
 
 
 class TestRescalePositions(unittest.TestCase):
