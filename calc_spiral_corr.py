@@ -9,8 +9,8 @@ def process_file(path_to_input: str, path_to_output: str,
                 data_start_row_ix: int=0, min_radius: int=1,
                 max_radius: int=25, radius_step_size: int=25,
                 px_conversion: int=1, px_step_size: int=1,
-                x_pos_fea: str='x [px]', y_pos_fea: str='y [px]',
-                x_vel_fea: str='u [px/frame]', y_vel_fea: str='v [px/frame]') -> None:
+                x_pos_fea: str='x [m]', y_pos_fea: str='y [m]',
+                x_vel_fea: str='u [m/s]', y_vel_fea: str='v [m/s]') -> None:
     """
     The main entrypoint into the process. Given the input file and arguments,
     constructs a csv with four columns: radius (in native px), correlation value,
@@ -29,10 +29,10 @@ def process_file(path_to_input: str, path_to_output: str,
             The row containing column headers in the input data
 
         min_radius: int, default =  1
-            The minimum radius (in px_step / px) of correlation calculation
+            The minimum radius of correlation calculation
 
         max_radius: int, default = 25
-            The maximum radius (in px_step / px) of correlation calculation
+            The maximum radius of correlation calculation
 
         radius_step_size: int, default = 1
             The step size of radii to analyze. For instance, min =1, max = 10,
@@ -45,10 +45,10 @@ def process_file(path_to_input: str, path_to_output: str,
         y_pos_fea: str, default = 'y [px]'
             The name of the y-coordiname column
 
-        x_vel_fea: str, default = 'u [px/frame]'
+        x_vel_fea: str, default = 'u [m/s]'
             The name of the x-velocity column
 
-        y_vel_fea: str, default = 'v [px/frame]'
+        y_vel_fea: str, default = 'v [m/s]'
             The name of the y-velocity column
 
 
@@ -132,37 +132,37 @@ def _construct_arg_parser() -> argparse.ArgumentParser:
         ("--rmin",{
             "type": int,
             "default": 1,
-            "help": "The minimum radius size (in px_grid_spacing/px) to observe. Default = 1"
+            "help": "The minimum radius size to observe. Default = 1"
         }),
         ("--rmax",{
             "type": int,
             "default": 25,
-            "help": "The maximum radius size (in px_grid_spacing/px) to observe. Default = 25"
+            "help": "The maximum radius size to observe. Default = 25"
         }),
         ("--rstep",{
             "type": int,
             "default": 1,
-            "help": "The radius step size (in px_grid_spacing/px) to compute. Default = 1"
+            "help": "The radius step size to compute. Default = 1"
         }),
         ("--xpfea",{
             "type": str,
             "default": "x [m]",
-            "help": "The column name of the x-coordinate values. Default = 'x [px]'"
+            "help": "The column name of the x-coordinate values. Default = 'x [m]'"
         }),
         ("--ypfea",{
             "type": str,
             "default": "y [m]",
-            "help": "The column name of the y-coordinate values. Default = 'y [px]'"
+            "help": "The column name of the y-coordinate values. Default = 'y [m]'"
         }),
         ("--xvfea",{
             "type": str,
             "default": "u [m/s]",
-            "help": "The column name of the x-velocity values. Default = 'u [px/frame]'"
+            "help": "The column name of the x-velocity values. Default = 'u [m/s]'"
         }),
         ("--yvfea",{
             "type": str,
             "default": "v [m/s]",
-            "help": "The column name of the x-coordinate values. Default = 'v [px/frame]'"
+            "help": "The column name of the x-coordinate values. Default = 'v [m/s]'"
         })
     )
     parser = argparse.ArgumentParser(description = help_description,epilog = help_epilog)

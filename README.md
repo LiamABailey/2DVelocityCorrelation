@@ -24,13 +24,13 @@ This correlation is averaged across an unspecified number of orientations - this
 
 ## Processing via the command line using `calc_spiral_corr.py`
 
-A script, `calc_spiral_corr.py` , has been written to support the calculation of the radius measure against tabular data. This process takes a single .csv as input (describing velocity in one frame), and returns a single .csv as output (describing the correlation across the desired radii). It supports a variety of inputs to configure the process, allowing for control over the measurement radii, coversion to a *pixel* [px] basis, and reshaping to remove gaps in the data (px_grid_spacing). Please note that many velocity measurement systems, such as PIVLAB, provide velocity measurements on a grid, such that measurements are *n* pixels away from one another. It is recommended to provide *n* as a scaling factor via (px_grid_spacing) to improve computation time (as gaps in the grid are ignored) and to provide a more readily interpretable output. Please note that the output `RADIUS[px]` in the resulting .csv is in the original scale from the input data file, not on the rescaled grid.
+A script, `calc_spiral_corr.py` , has been written to support the calculation of the radius measure against tabular data. This process takes a single .csv as input (describing velocity in one frame), and returns a single .csv as output (describing the correlation across the desired radii). It supports a variety of inputs to configure the process, allowing for control over the measurement radii, and variations in file structure. Results are returned with respect to the radius size, where a radius unit of 1 is equal to the minimum distance between any two points in the X or Y coordinate spaces. Note that scales in the X and Y coordinate spaces are required to be equal, and that the program automatically attempts to identify these scales.
 
 
 The help text (which can be recovered by the -h flag, is shown below).
 
-    usage: calc_spiral_corr.py [-h] [--ds data_start_row_ix] [--rmin RMIN] [--rmax RMAX] [--rstep RSTEP] [--pxconv PXCONV]
-                               [--pxstep px_grid_spacing] [--xpfea XPFEA] [--ypfea YPFEA] [--xvfea XVFEA] [--yvfea YVFEA]
+    usage: calc_spiral_corr.py [-h] [--ds data_start_row_ix] [--rmin RMIN] [--rmax RMAX] [--rstep RSTEP]
+                               [--xpfea XPFEA] [--ypfea YPFEA] [--xvfea XVFEA] [--yvfea YVFEA]
                                input output
 
     calc_spiral_corr.py: a utility for calculating spiraling velocity correlation. See below for input argument definitions.
@@ -43,16 +43,13 @@ The help text (which can be recovered by the -h flag, is shown below).
       -h, --help            show this help message and exit
       --ds data_start_row_ix
                             The row in the input .csv containing the column headers, indexed from zero. Default = 0
-      --rmin RMIN           The minimum radius size (in px_grid_spacing/px) to observe. Default = 1
-      --rmax RMAX           The maximum radius size (in px_grid_spacing/px) to observe. Default = 25
-      --rstep RSTEP         The radius step size (in px_grid_spacing/px) to compute. Default = 1
-      --pxconv PXCONV       The conversion factor to px for x/y coordinate features. If not provided, no conversion applied.
-      --pxstep px_grid_spacing
-                            The grid spacing between each observation, in px. Default = 1
-      --xpfea XPFEA         The column name of the x-coordinate values. Default = 'x [px]'
-      --ypfea YPFEA         The column name of the y-coordinate values. Default = 'y [px]'
-      --xvfea XVFEA         The column name of the x-velocity values. Default = 'u [px/frame]'
-      --yvfea YVFEA         The column name of the x-coordinate values. Default = 'v [px/frame]'
+      --rmin RMIN           The minimum radius size (where a single unit is the minimum distance between any two points in the X or Y coordinate space) to observe. Default = 1
+      --rmax RMAX           The maximum radius size (where a single unit is the minimum distance between any two points in the X or Y coordinate space) to observe. Default = 25
+      --rstep RSTEP         The radius step size (where a single unit is the minimum distance between any two points in the X or Y coordinate space) to compute. Default = 1
+      --xpfea XPFEA         The column name of the x-coordinate values. Default = 'x [m]'
+      --ypfea YPFEA         The column name of the y-coordinate values. Default = 'y [m]'
+      --xvfea XVFEA         The column name of the x-velocity values. Default = 'u [m/s]'
+      --yvfea YVFEA         The column name of the x-coordinate values. Default = 'v [m/s]'
 
 
 Sample command: <br/>
@@ -63,10 +60,13 @@ Sample command: <br/>
 The function `velocity_corr()` expects square data (s.t. all observation points are evenly spaced, and the y-velocity unit is the same as the x-velocity unit) as an `n*m*2` matrix, where `n` is the size of the y-dimension, `m` is the size of the x-dimension. The last dimension is depth-2, where the first layer is the x-velocity component, and the second layer is the y-velocity component.
 
 As data is not always readily available in the above format, a number of functions, importable via `velocitycorrelation2D.utils` have been created to import and shape data:
-- `square_input()`
-  - Given the input dataframe with rows of [x-coord, y-coord, x-vel, y-vel], coverts from tabular format into the desired `n*m*2` matrix
+
+- `find_conversion_factor()`:
+  - Used to detect the conversion factor to convert from the floating-point positional measurements to the integer grid space, where each point's immediate neighbors are [-1,0,1] away in the x/y coordinate spaces
 - `rescale_positions()`
   - Some scientific applications provide data where vector start points separated from one another by more than one pixel (such that division by a number *x* would place all observation points 1 pixel away from neighbors in the x/y coordinate space). This function (applied to the tabular data) rescales the positions s.t. they are one pixel away, and sets the minimum coordinate to (0,0).
+- `square_input()`
+  - Given the input dataframe with rows of [x-coord, y-coord, x-vel, y-vel], coverts from tabular format into the desired `n*m*2` matrix
 
 **Note** If using both functions, `rescale_positions()` must be used first - `square_input()` returns a data format not accepted by `rescale_positions()`
 
