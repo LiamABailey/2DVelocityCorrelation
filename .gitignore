@@ -1,2 +1,6 @@
 *.pyc
 *.csv
+*.txt
+
+# retain csv for test assets
+!test_assets/*/*.csv
