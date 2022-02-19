@@ -1,5 +1,7 @@
 # 2DVelocityCorrelation
 
+[![DOI](https://zenodo.org/badge/414017395.svg)](https://zenodo.org/badge/latestdoi/414017395)
+
 Implementation of the velocity correlation algorithm used in 'Self-concentration and Large-Scale Coherence in Bacterial Dynamics', Dombrowski et al; 'Cytoplasmic streaming in Drosophilia oocytes with kinesin activity and correlates with the microtubule cytoskeleton architecture', Ganguly et al.
 
 Core function `square_input` is available in `velocitycorrelation2D`, other functions to format the data can be found in `velocitycorrelation2D.velutils`
