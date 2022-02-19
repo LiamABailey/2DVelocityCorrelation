@@ -80,3 +80,6 @@ As data is not always readily available in the above format, a number of functio
 Ganguly, S., Williams, L., Palacios, I. and Goldstein, R., 2012. Cytoplasmic streaming in Drosophila oocytes varies with kinesin activity and correlates with the microtubule cytoskeleton architecture. Proceedings of the National Academy of Sciences, 109(38), pp.15109-15114.
 
 Dombrowski, C., Cisneros, L., Chatkaew, S., Goldstein, R. and Kessler, J., 2004. Self-Concentration and Large-Scale Coherence in Bacterial Dynamics.
+
+## License, Liability, and Warranty
+The author does not offer a warranty for any portion of the project, nor is the author liable for the damages associated with the use, or inability to use any portion of the project. Please see `LICENSE` (GNU GENERAL PUBLIC LICENSE Version 3) for more information.
