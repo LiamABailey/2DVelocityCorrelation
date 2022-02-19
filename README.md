@@ -4,10 +4,10 @@
 
 Implementation of the velocity correlation algorithm used in 'Self-concentration and Large-Scale Coherence in Bacterial Dynamics', Dombrowski et al; 'Cytoplasmic streaming in Drosophilia oocytes with kinesin activity and correlates with the microtubule cytoskeleton architecture', Ganguly et al.
 
-Core function `square_input` is available in `velocitycorrelation2D`, other functions to format the data can be found in `velocitycorrelation2D.velutils`
+Core function `velocity_corr` is available in `velocitycorrelation2D.velocity_corr`, other functions to format the data can be found in `velocitycorrelation2D.velutils`
 
-`import velocitycorrelation2D as vd`  
-`from velocitycorrelaction2D import velutils`
+`import velocitycorrelation2D.correlation`  
+`import velocitycorrelation2D.velutils`
 
 
 ## Velocity Correlation as a Function of In-Plane Distance
@@ -56,7 +56,7 @@ The help text (which can be recovered by the -h flag, is shown below).
 
 Sample command: <br/>
 
-    python calc_spiral_corr.py C:\Users\Liam\Documents\Projects\2020\radial_correlation_measure\data\px_basis\PIVlab_0001.txt C:\Users\Liam\Desktop\test_output.csv --ds 2 --rmin 1 --rmax 50 --pxstep 5
+    python calc_spiral_corr.py C:\Users\Liam\Documents\Projects\2020\radial_correlation_measure\data\px_basis\PIVlab_0001.txt C:\Users\Liam\Desktop\test_output.csv --ds 2 --rmin 1 --rmax 50 --rstep 1
 
 ## Using the provided package
 The function `velocity_corr()` expects square data (s.t. all observation points are evenly spaced, and the y-velocity unit is the same as the x-velocity unit) as an `n*m*2` matrix, where `n` is the size of the y-dimension, `m` is the size of the x-dimension. The last dimension is depth-2, where the first layer is the x-velocity component, and the second layer is the y-velocity component.

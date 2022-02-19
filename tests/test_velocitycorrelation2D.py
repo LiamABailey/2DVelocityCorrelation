@@ -1,12 +1,12 @@
 """
-Tests for velocitycorrelation2D.py
+Tests for correlation.py
 """
 
 import unittest
 
 import numpy as np
 
-import velocitycorrelation2D as vc
+import velocitycorrelation2D.correlation as vc
 
 
 class TestVelocityCorr(unittest.TestCase):
