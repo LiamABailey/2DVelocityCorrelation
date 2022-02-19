@@ -2,7 +2,8 @@ import argparse
 
 import pandas as pd
 
-from velocitycorrelation2D import rescale_positions, square_input, velocity_corr, find_conversion_factor
+from velocitycorrelation2D.velutils import rescale_positions, square_input, find_conversion_factor
+from velocitycorrelation2D.correlation import velocity_corr
 
 
 def process_file(path_to_input: str, path_to_output: str,
@@ -39,10 +40,10 @@ def process_file(path_to_input: str, path_to_output: str,
             step = 2 would result in the following observations:
                 [1,3,5,7,9]
 
-        x_pos_fea: str, default = 'x [px]'
+        x_pos_fea: str, default = 'x [m]'
             The name of the x-coordinate column
 
-        y_pos_fea: str, default = 'y [px]'
+        y_pos_fea: str, default = 'y [m]'
             The name of the y-coordiname column
 
         x_vel_fea: str, default = 'u [m/s]'
@@ -76,7 +77,8 @@ def process_file(path_to_input: str, path_to_output: str,
     print(f"Discovered conversion factor of {conversion_factor}")
     # perform rescaling ops
     rescaled_data = rescale_positions(raw_data, conversion_factor = conversion_factor,
-                                        xcoord_fea = x_pos_fea, ycoord_fea = y_pos_fea)
+                                        xcoord_fea = x_pos_fea, ycoord_fea = y_pos_fea,
+                                        tolerance = 5e-4)
     # square the data - convert from tabular to y*x*2
     squared_data = square_input(rescaled_data, xcoord_fea = x_pos_fea, ycoord_fea = y_pos_fea,
                                 xvel_fea = x_vel_fea, yvel_fea = y_vel_fea)

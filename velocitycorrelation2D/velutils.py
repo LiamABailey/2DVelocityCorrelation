@@ -169,7 +169,8 @@ def square_input(in_df,xcoord_fea='x [px]',
 def rescale_positions(in_df,
                     conversion_factor = 1,
                     xcoord_fea = 'x [px]',
-                     ycoord_fea = 'y [px]'):
+                    ycoord_fea = 'y [px]',
+                    tolerance = 1e-5 ):
     """
     Some scientific applications provide data where vector start points
     are a number of units (often pixels) separated from one another. Data
@@ -192,11 +193,14 @@ def rescale_positions(in_df,
         xcoord_fea : str, default = 'x [px]'
             The x-coordinate column name
 
+        tolerance : float, default = 1e-5
+            The required conversion precision. If converted positions are
+            not <integer> +/- tolerance, an error is raised
+
     Returns
     -------
         pd.DataFrame: The dataframe, with positions rescaled
     """
-    TOL = 1e-5
 
     if conversion_factor <= 0:
         raise ValueError("Conversion factor must be greater than zero")
@@ -206,7 +210,7 @@ def rescale_positions(in_df,
         new_df[c] = ((new_df[c] - np.min(new_df[c]))/(conversion_factor))
 
     # check for castability to integer
-    if np.any(np.abs(new_df[[ycoord_fea, xcoord_fea]].values % 1) > TOL):
+    if np.any(np.abs(new_df[[ycoord_fea, xcoord_fea]].values % 1) > tolerance):
         raise ValueError("Cannot safely cast scaled values to integers. "
                         "Confirm that step size and conversion_factor are correct.")
 
